@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>임직원 복지몰 업무제휴 협약서</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: '맑은 고딕', 'Malgun Gothic', sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      padding: 15px;
+      line-height: 1.6;
+      margin: 0;
+      min-height: 100vh;
+    }
+
+    h1, h2 {
+      text-align: center;
+      margin-bottom: 20px;
+      word-break: keep-all;
+    }
+
+    h1 {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      margin-top: 10px;
+    }
+
+    h2 {
+      font-size: clamp(1.2rem, 3vw, 2rem);
+    }
+
+    .field-label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .contract-box {
+      background: #fff;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      padding: clamp(15px, 3vw, 25px);
+      box-shadow: 0 0 10px rgba(0,0,0,0.05);
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    .signature-box {
+      margin-top: 40px;
+      border-top: 1px solid #ccc;
+      padding-top: 20px;
+    }
+
+    #signature-pad {
+      width: 100%;
+      height: clamp(150px, 30vh, 200px);
+      border: 1px dashed #aaa;
+      background: #fff;
+      border-radius: 5px;
+      touch-action: none;
+    }
+
+    .button {
+      margin-top: 15px;
+      background: #0077cc;
+      color: white;
+      border: none;
+      padding: clamp(10px, 2vw, 12px) clamp(15px, 3vw, 20px);
+      border-radius: 6px;
+      font-size: clamp(14px, 2.5vw, 16px);
+      cursor: pointer;
+      width: 100%;
+      max-width: 300px;
+      transition: background-color 0.3s ease;
+    }
+
+    .button:hover {
+      background: #005fa3;
+    }
+
+    .button:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group input {
+      width: 100%;
+      padding: clamp(8px, 2vw, 12px);
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: clamp(14px, 2.5vw, 16px);
+      font-family: inherit;
+    }
+
+    .form-group input:focus {
+      outline: none;
+      border-color: #0077cc;
+      box-shadow: 0 0 5px rgba(0, 119, 204, 0.3);
+    }
+
+    .status-message {
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 4px;
+      font-weight: bold;
+      font-size: clamp(14px, 2.5vw, 16px);
+    }
+
+    .status-success {
+      background: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status-error {
+      background: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    .contract-sections {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    @media (min-width: 768px) {
+      .contract-sections {
+        flex-direction: row;
+        justify-content: space-between;
+      }
+    }
+
+    .section {
+      flex: 1;
+    }
+
+    .section h3 {
+      text-align: center;
+      margin-bottom: 15px;
+      font-size: clamp(1.1rem, 2.5vw, 1.3rem);
+    }
+
+    .company-info {
+      background: #f8f9fa;
+      padding: clamp(12px, 2.5vw, 15px);
+      border-radius: 5px;
+      margin-bottom: 10px;
+      border: 1px solid #e9ecef;
+    }
+
+    .company-info p {
+      margin: 8px 0;
+      font-size: clamp(14px, 2.5vw, 16px);
+      word-break: keep-all;
+    }
+
+    .date-section {
+      text-align: center;
+      margin: 20px 0;
+      font-size: clamp(16px, 3vw, 18px);
+    }
+
+    .date-section p {
+      margin: 10px 0;
+    }
+
+    .contract-content {
+      margin: 30px 0;
+      line-height: 1.8;
+    }
+
+    .contract-content p {
+      margin-bottom: 15px;
+      font-size: clamp(14px, 2.5vw, 16px);
+      word-break: keep-all;
+    }
+
+    .contract-content ol {
+      margin-left: 20px;
+      padding-left: 0;
+    }
+
+    .contract-content li {
+      margin-bottom: 15px;
+      font-size: clamp(14px, 2.5vw, 16px);
+      word-break: keep-all;
+      line-height: 1.7;
+    }
+
+    .contract-content strong {
+      color: #0077cc;
+    }
+
+    /* 모바일 최적화 */
+    @media (max-width: 767px) {
+      body {
+        padding: 10px;
+      }
+
+      .contract-box {
+        padding: 15px;
+        border-radius: 8px;
+      }
+
+      .contract-content ol {
+        margin-left: 15px;
+      }
+
+      .contract-content li {
+        margin-bottom: 12px;
+      }
+
+      .button {
+        margin-top: 10px;
+        padding: 12px 16px;
+      }
+
+      #signature-pad {
+        height: 150px;
+      }
+    }
+
+    /* 태블릿 최적화 */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .contract-box {
+        padding: 20px;
+      }
+
+      .contract-sections {
+        gap: 30px;
+      }
+    }
+
+    /* 데스크톱 최적화 */
+    @media (min-width: 1024px) {
+      body {
+        padding: 30px;
+      }
+
+      .contract-box {
+        padding: 25px;
+      }
+
+      .contract-sections {
+        gap: 40px;
+      }
+    }
+
+    /* 인쇄 스타일 */
+    @media print {
+      body {
+        background: white;
+        padding: 0;
+        width: 1024px;
+        max-width: none;
+      }
+
+      .contract-box {
+        box-shadow: none;
+        border: none;
+        padding: 0;
+        max-width: none;
+        width: 100%;
+      }
+
+      .button {
+        display: none;
+      }
+
+      #signature-pad {
+        border: 1px solid #000;
+      }
+    }
+
+    /* PDF 생성용 스타일 */
+    .pdf-mode {
+      width: 1024px !important;
+      max-width: 1024px !important;
+      margin: 0 !important;
+      background: white !important;
+      padding: 10px !important;
+      font-size: 16px !important;
+    }
+
+    .pdf-mode .contract-box {
+      max-width: none !important;
+      width: 100% !important;
+      box-shadow: none !important;
+      border: none !important;
+      padding: 15px !important;
+    }
+
+    .pdf-mode h1 {
+      margin-top: 5px !important;
+      margin-bottom: 15px !important;
+      font-size: 24px !important;
+    }
+
+    .pdf-mode h2 {
+      font-size: 20px !important;
+    }
+
+    .pdf-mode .contract-content {
+      margin: 20px 0 !important;
+    }
+
+    .pdf-mode .contract-content p {
+      font-size: 16px !important;
+      line-height: 1.6 !important;
+    }
+
+    .pdf-mode .contract-content li {
+      font-size: 16px !important;
+      line-height: 1.6 !important;
+    }
+
+    /* PC 레이아웃 강제 적용 */
+    .pdf-mode .contract-sections {
+      flex-direction: row !important;
+      justify-content: space-between !important;
+      gap: 40px !important;
+    }
+
+    .pdf-mode .section {
+      flex: 1 !important;
+    }
+
+    .pdf-mode .section h3 {
+      font-size: 18px !important;
+      text-align: center !important;
+      margin-bottom: 15px !important;
+    }
+
+    .pdf-mode .company-info {
+      background: #f8f9fa !important;
+      padding: 15px !important;
+      border-radius: 5px !important;
+      margin-bottom: 10px !important;
+      border: 1px solid #e9ecef !important;
+    }
+
+    .pdf-mode .company-info p {
+      margin: 8px 0 !important;
+      font-size: 16px !important;
+    }
+
+    .pdf-mode .form-group {
+      margin-bottom: 15px !important;
+    }
+
+    .pdf-mode .form-group input {
+      width: 100% !important;
+      padding: 12px !important;
+      border: 1px solid #ddd !important;
+      border-radius: 4px !important;
+      font-size: 16px !important;
+      font-family: inherit !important;
+    }
+
+    .pdf-mode .field-label {
+      font-weight: bold !important;
+      display: block !important;
+      margin-bottom: 5px !important;
+      font-size: 16px !important;
+    }
+
+    .pdf-mode .date-section {
+      text-align: center !important;
+      margin: 20px 0 !important;
+      font-size: 18px !important;
+    }
+
+    .pdf-mode .signature-box {
+      margin-top: 20px !important;
+      padding-top: 15px !important;
+      border-top: 1px solid #ccc !important;
+    }
+
+    .pdf-mode .signature-box h3 {
+      margin-bottom: 10px !important;
+      text-align: center !important;
+      font-size: 18px !important;
+    }
+
+    .pdf-mode .signature-box p {
+      margin-bottom: 15px !important;
+      text-align: center !important;
+      font-size: 16px !important;
+    }
+
+    .pdf-mode #signature-pad {
+      height: 120px !important;
+      border: 1px dashed #aaa !important;
+      background: #fff !important;
+      border-radius: 5px !important;
+    }
+
+    .pdf-mode .signature-box img {
+      max-width: 100% !important;
+      height: auto !important;
+      display: block !important;
+      margin: 10px auto !important;
+      border: 1px solid #ccc !important;
+      background: white !important;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>임직원 복지몰 업무제휴 협약서</h1>
+  
+  <div class="contract-box">
+    <div class="contract-content">
+      <p>본 제휴 계약서는 주식회사 셀틱(이하 "회사" 이라고 한다.)과 주식회사 [하단 폼에서 입력] (이하 "파트너사" 이라고 한다.) 사이에 업무 제휴를 위해 체결한다.</p>
+      
+      <p style="text-align: center;"><strong>- 아 래 -</strong></p>
+      
+      <p>"회사"와 "파트너사"는 상호간의 성공적인 사업협력을 위하여 아래의 전략적인 제휴관계를 맺을 것을 동의하며 제휴관계 업무협의를 위한 제휴계약서를 다음과 같이 체결한다.</p>
+      
+      <ol>
+        <li>"회사"는 "파트너사"에 임직원 복지몰 플랫폼 (이하 "복지몰"이라고 한다.) 전반에 걸친 서비스를 제공하고, "파트너사"는 "회사"가 제공하는 복지몰 서비스를 이용하며 온라인 시장의 향후 발전되는 사업부분에 협력사로서 제휴키로 하며 상호 호혜의 원칙에 따라 적극 협력하기로 한다.</li>
+        
+        <li>"회사"와 "파트너사"는 양사가 펼치고 있는 사업부분의 시장개척 및 확대를 위하여 상호협력하며, 협력사업 및 구체적인 협력방법에 대해서는 별도로 협의한다.</li>
+        
+        <li>"회사"와 "파트너사"는 상호 협력사업을 추진함에 있어 "회사"의 경쟁회사와는 동일한 제휴관계를 맺지 않을 것을 동의하며, "회사"의 경쟁회사와의 거래에 대한 구체적인 사항에 대해서는 별도로 협의한다.</li>
+        
+        <li>"회사"와 "파트너사"는 상호 협력사업을 추진하는 과정에서 직접 또는 간접적으로 확보한 상대방의 사업에 관한 모든 정보는 대외비로 취급하며 외부에 정보공개가 필요한 경우 상대방의 서면 승인 하에 공개한다.</li>
+      </ol>
+      
+      <p>본 양해각서는 국문으로 원본 2부를 작성하여 양 당사자가 서명하고 각각 보관한다.</p>
+    </div>
+
+    <div class="date-section">
+      <p class="field-label"><span id="currentDate"></span></p>
+    </div>
+
+    <div class="contract-sections">
+      <div class="section">
+        <h3>"회사"</h3>
+        <div class="company-info">
+          <p>부산시 해운대구 센텀중앙로97 A-2911</p>
+          <p>주식회사 셀틱</p>
+          <p>대표이사 여건수(인)</p>
+        </div>
+      </div>
+      
+      <div class="section">
+        <h3>"파트너사"</h3>
+        <div class="form-group">
+          <label for="partnerName" class="field-label">상호:</label>
+          <input type="text" id="partnerName" placeholder="상호를 입력하세요" required>
+        </div>
+        <div class="form-group">
+          <label for="partnerAddress" class="field-label">주소:</label>
+          <input type="text" id="partnerAddress" placeholder="주소를 입력하세요" required>
+        </div>
+        <div class="form-group">
+          <label for="partnerEmail" class="field-label">이메일:</label>
+          <input type="email" id="partnerEmail" placeholder="이메일을 입력하세요" required>
+        </div>
+        <div class="form-group">
+          <label for="partnerRepresentative" class="field-label">대표자:</label>
+          <input type="text" id="partnerRepresentative" placeholder="대표자명을 입력하세요" required>
+        </div>
+      </div>
+    </div>
+
+    <div class="signature-box">
+      <h3>서명</h3>
+      <p>위 내용에 동의하여 서명합니다.</p>
+      <canvas id="signature-pad"></canvas>
+      <button class="button" onclick="clearSignature()">서명 지우기</button>
+      <button class="button" onclick="generatePDF()" id="submitBtn">계약서 제출 및 PDF 저장</button>
+      <div id="statusMessage"></div>
+    </div>
+  </div>
+
+  <!-- 스크립트 삽입 -->
+  <script src="https://cdn.jsdelivr.net/npm/signature_pad@4.0.0/dist/signature_pad.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <script>
+    const canvas = document.getElementById('signature-pad');
+    const signaturePad = new SignaturePad(canvas);
+
+    // 오늘 날짜를 계약일 입력란에 기본값으로 설정
+    window.addEventListener('DOMContentLoaded', () => {
+      const currentDateSpan = document.getElementById('currentDate');
+      if (currentDateSpan) {
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        const mm = String(today.getMonth() + 1).padStart(2, '0');
+        const dd = String(today.getDate()).padStart(2, '0');
+        currentDateSpan.textContent = `${yyyy}-${mm}-${dd}`;
+      }
+
+      // 파트너사 상호 입력 시 계약서 내용에 자동 반영
+      const partnerNameInput = document.getElementById('partnerName');
+      if (partnerNameInput) {
+        partnerNameInput.addEventListener('blur', function() {
+          const companyName = this.value.trim();
+          const contractText = document.querySelector('.contract-content p:first-child');
+          if (contractText) {
+            if (companyName) {
+              // 기존에 강조된 회사명이나 [하단 폼에서 입력] 텍스트를 모두 새로운 회사명으로 교체
+              contractText.innerHTML = contractText.innerHTML.replace(/(<strong>.*?<\/strong>|\[하단 폼에서 입력\])/g, `<strong>${companyName}</strong>`);
+            } else {
+              // 입력값이 없으면 강조된 회사명을 [하단 폼에서 입력]으로 되돌림
+              contractText.innerHTML = contractText.innerHTML.replace(/<strong>.*?<\/strong>/, '[하단 폼에서 입력]');
+            }
+          }
+        });
+      }
+    });
+
+    function clearSignature() {
+      signaturePad.clear();
+    }
+
+    function showStatus(message, isSuccess = true) {
+      const statusDiv = document.getElementById('statusMessage');
+      statusDiv.textContent = message;
+      statusDiv.className = `status-message ${isSuccess ? 'status-success' : 'status-error'}`;
+    }
+
+    function validateForm() {
+      const partnerAddress = document.getElementById('partnerAddress').value.trim();
+      const partnerName = document.getElementById('partnerName').value.trim();
+      const partnerRepresentative = document.getElementById('partnerRepresentative').value.trim();
+      const partnerEmail = document.getElementById('partnerEmail').value.trim();
+      const currentDateSpan = document.getElementById('currentDate');
+      const contractDate = currentDateSpan ? currentDateSpan.textContent : '';
+
+      if (!partnerAddress || !partnerName || !partnerRepresentative || !partnerEmail) {
+        showStatus('모든 필드를 입력해주세요.', false);
+        return false;
+      }
+
+      if (signaturePad.isEmpty()) {
+        showStatus('서명을 입력해주세요.', false);
+        return false;
+      }
+
+      return true;
+    }
+
+    async function generatePDF() {
+      if (!validateForm()) {
+        return;
+      }
+
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.textContent = '처리 중...';
+
+      try {
+        // 폼 데이터 수집
+        const partnerAddress = document.getElementById('partnerAddress').value.trim();
+        const partnerName = document.getElementById('partnerName').value.trim();
+        const partnerRepresentative = document.getElementById('partnerRepresentative').value.trim();
+        const partnerEmail = document.getElementById('partnerEmail').value.trim();
+        const currentDateSpan = document.getElementById('currentDate');
+        const contractDate = currentDateSpan ? currentDateSpan.textContent : '';
+
+        // 서명 이미지 추가 (고품질)
+        const signatureImage = signaturePad.toDataURL('image/png', 1.0);
+        const signatureImgTag = document.createElement('img');
+        signatureImgTag.src = signatureImage;
+        signatureImgTag.style.cssText = `
+          width: 100%;
+          max-width: 300px;
+          height: auto;
+          display: block;
+          margin: 10px auto;
+          border: 1px solid #ccc;
+          background: white;
+          image-rendering: -webkit-optimize-contrast;
+          image-rendering: crisp-edges;
+        `;
+
+        // 기존 서명 이미지가 있다면 제거
+        const existingSignature = document.querySelector('.signature-box img');
+        if (existingSignature) {
+          existingSignature.remove();
+        }
+
+        document.querySelector('.signature-box').appendChild(signatureImgTag);
+
+        // PDF 생성을 위한 임시 요소 생성
+        const tempBody = document.body.cloneNode(true);
+        tempBody.classList.add('pdf-mode');
+        
+        // 버튼들 숨기기
+        const buttons = tempBody.querySelectorAll('.button');
+        buttons.forEach(btn => btn.style.display = 'none');
+
+        // 임시 요소에도 서명 이미지 추가
+        const tempSignatureBox = tempBody.querySelector('.signature-box');
+        if (tempSignatureBox) {
+          const tempSignatureImg = document.createElement('img');
+          tempSignatureImg.src = signatureImage;
+          tempSignatureImg.style.cssText = `
+            width: 100%;
+            max-width: 300px;
+            height: auto;
+            display: block;
+            margin: 10px auto;
+            border: 1px solid #ccc;
+            background: white;
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+          `;
+          
+          // 기존 서명 이미지가 있다면 제거
+          const existingTempSignature = tempSignatureBox.querySelector('img');
+          if (existingTempSignature) {
+            existingTempSignature.remove();
+          }
+          
+          tempSignatureBox.appendChild(tempSignatureImg);
+        }
+
+        // PDF 생성
+        const pdfBlob = await html2pdf().from(tempBody).set({
+          margin: [5, 5, 5, 5],
+          html2canvas: { 
+            scale: 2,
+            width: 1024,
+            useCORS: true,
+            allowTaint: true,
+            scrollY: 0,
+            backgroundColor: '#ffffff'
+          },
+          jsPDF: { 
+            format: 'a4', 
+            orientation: 'portrait',
+            unit: 'mm',
+            compress: true
+          }
+        }).outputPdf('blob');
+
+        // 서버에 업로드
+        const formData = new FormData();
+        formData.append('pdf', pdfBlob, `${partnerName}_업무제휴협약서.pdf`);
+        formData.append('partnerAddress', partnerAddress);
+        formData.append('partnerName', partnerName);
+        formData.append('partnerRepresentative', partnerRepresentative);
+        formData.append('partnerEmail', partnerEmail);
+        formData.append('contractDate', contractDate);
+
+        const response = await fetch('/upload-pdf', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+
+        if (result.success) {
+          showStatus('계약서가 성공적으로 서버에 저장되었습니다!');
+          
+          // 로컬 다운로드도 제공
+          const url = URL.createObjectURL(pdfBlob);
+          const a = document.createElement('a');
+          a.href = url;
+          a.download = `${partnerName}_업무제휴협약서.pdf`;
+          a.click();
+          URL.revokeObjectURL(url);
+        } else {
+          showStatus('서버 저장에 실패했습니다: ' + result.message, false);
+        }
+
+      } catch (error) {
+        console.error('PDF 생성 및 업로드 오류:', error);
+        showStatus('오류가 발생했습니다: ' + error.message, false);
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '계약서 제출 및 PDF 저장';
+      }
+    }
+  </script>
+</body>
+</html>

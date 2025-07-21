@@ -1,0 +1,13 @@
+version: "3.8"
+
+services:
+  contract-sign:
+    build: .
+    container_name: contract-sign
+    ports:
+      - "8081:3000"               # 외부 8081 → 내부 3000
+    volumes:
+      - ./uploads:/app/uploads   # PDF 저장 공유
+    env_file:
+      - .env                     # 로그인 정보 등 설정
+    restart: always
