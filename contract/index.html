@@ -63,6 +63,8 @@
       background: #fff;
       border-radius: 5px;
       touch-action: none;
+      image-rendering: -webkit-optimize-contrast;
+      image-rendering: crisp-edges;
     }
 
     .button {
@@ -77,6 +79,26 @@
       width: 100%;
       max-width: 300px;
       transition: background-color 0.3s ease;
+    }
+
+    .button-container {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      justify-content: flex-end;
+    }
+
+    .button-container .button {
+      margin-top: 0;
+      flex: 1;
+    }
+
+    .button-secondary {
+      background: #6c757d;
+    }
+
+    .button-secondary:hover {
+      background: #5a6268;
     }
 
     .button:hover {
@@ -224,6 +246,11 @@
       .button {
         margin-top: 10px;
         padding: 12px 16px;
+      }
+
+      .button-container {
+        gap: 8px;
+        margin-top: 10px;
       }
 
       #signature-pad {
@@ -450,7 +477,7 @@
         <h3>"회사"</h3>
         <div class="company-info">
           <p>부산시 해운대구 센텀중앙로97 A-2911</p>
-          <p>주식회사 셀틱</p>
+          <p>주식회사 셀릭</p>
           <p>대표이사 여건수(인)</p>
         </div>
       </div>
@@ -480,8 +507,10 @@
       <h3>서명</h3>
       <p>위 내용에 동의하여 서명합니다.</p>
       <canvas id="signature-pad"></canvas>
-      <button class="button" onclick="clearSignature()">서명 지우기</button>
-      <button class="button" onclick="generatePDF()" id="submitBtn">계약서 제출 및 PDF 저장</button>
+      <div class="button-container">
+        <button class="button button-secondary" onclick="clearSignature()">서명 지우기</button>
+        <button class="button" onclick="generatePDF()" id="submitBtn">계약서 제출 및 PDF 저장</button>
+      </div>
       <div id="statusMessage"></div>
     </div>
   </div>
@@ -491,7 +520,12 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
   <script>
     const canvas = document.getElementById('signature-pad');
-    const signaturePad = new SignaturePad(canvas);
+    const signaturePad = new SignaturePad(canvas, {
+      minWidth: 1,
+      maxWidth: 3,
+      throttle: 16,
+      velocityFilterWeight: 0.7,
+    });
 
     // 오늘 날짜를 계약일 입력란에 기본값으로 설정
     window.addEventListener('DOMContentLoaded', () => {
@@ -573,7 +607,7 @@
         const contractDate = currentDateSpan ? currentDateSpan.textContent : '';
 
         // 서명 이미지 추가 (고품질)
-        const signatureImage = signaturePad.toDataURL('image/png', 1.0);
+        const signatureImage = signaturePad.toDataURL('image/png', 2.0);
         const signatureImgTag = document.createElement('img');
         signatureImgTag.src = signatureImage;
         signatureImgTag.style.cssText = `
@@ -586,6 +620,7 @@
           background: white;
           image-rendering: -webkit-optimize-contrast;
           image-rendering: crisp-edges;
+          image-rendering: pixelated;
         `;
 
         // 기존 서명 이미지가 있다면 제거
@@ -604,42 +639,75 @@
         const buttons = tempBody.querySelectorAll('.button');
         buttons.forEach(btn => btn.style.display = 'none');
 
-        // 임시 요소에도 서명 이미지 추가
+        // signature-box 전체 제거 (PDF 하단에 서명 박스 안 보이게)
         const tempSignatureBox = tempBody.querySelector('.signature-box');
         if (tempSignatureBox) {
-          const tempSignatureImg = document.createElement('img');
-          tempSignatureImg.src = signatureImage;
-          tempSignatureImg.style.cssText = `
-            width: 100%;
-            max-width: 300px;
-            height: auto;
-            display: block;
-            margin: 10px auto;
-            border: 1px solid #ccc;
-            background: white;
-            image-rendering: -webkit-optimize-contrast;
-            image-rendering: crisp-edges;
-          `;
-          
-          // 기존 서명 이미지가 있다면 제거
-          const existingTempSignature = tempSignatureBox.querySelector('img');
-          if (existingTempSignature) {
-            existingTempSignature.remove();
+          tempSignatureBox.remove();
+        }
+
+        // 파트너사 대표자 입력란(form-group) 아래에 서명 필드를 추가
+        const tempPartnerSection = tempBody.querySelector('.contract-sections .section:last-child');
+        if (tempPartnerSection) {
+          const repGroup = tempPartnerSection.querySelector('.form-group:last-child');
+          if (repGroup) {
+            // 이미 서명 필드가 있으면 제거
+            const oldSignGroup = tempPartnerSection.querySelector('.form-group:last-child + .form-group');
+            if (oldSignGroup && oldSignGroup.querySelector('.field-label') && oldSignGroup.querySelector('.field-label').textContent === '서명:') {
+              oldSignGroup.remove();
+            }
+            
+            // 서명 필드 생성 (다른 필드들과 일관된 디자인)
+            const signGroup = document.createElement('div');
+            signGroup.className = 'form-group';
+            
+            const signLabel = document.createElement('label');
+            signLabel.className = 'field-label';
+            signLabel.textContent = '서명:';
+            
+            const signBox = document.createElement('div');
+            signBox.style.cssText = `
+              width: 100%;
+              padding: 12px;
+              border: 1px solid #ddd;
+              border-radius: 4px;
+              background: white;
+              min-height: 80px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+            `;
+            
+            const signImg = document.createElement('img');
+            signImg.src = signatureImage;
+            signImg.style.cssText = `
+              max-width: 100%;
+              max-height: 60px;
+              width: auto;
+              height: auto;
+              image-rendering: -webkit-optimize-contrast;
+              image-rendering: crisp-edges;
+              image-rendering: pixelated;
+            `;
+            
+            signBox.appendChild(signImg);
+            signGroup.appendChild(signLabel);
+            signGroup.appendChild(signBox);
+            repGroup.insertAdjacentElement('afterend', signGroup);
           }
-          
-          tempSignatureBox.appendChild(tempSignatureImg);
         }
 
         // PDF 생성
         const pdfBlob = await html2pdf().from(tempBody).set({
           margin: [5, 5, 5, 5],
           html2canvas: { 
-            scale: 2,
+            scale: 3,
             width: 1024,
             useCORS: true,
             allowTaint: true,
             scrollY: 0,
-            backgroundColor: '#ffffff'
+            backgroundColor: '#ffffff',
+            imageTimeout: 0,
+            logging: false
           },
           jsPDF: { 
             format: 'a4', 
