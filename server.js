@@ -26,9 +26,21 @@ const storage = multer.diskStorage({
     cb(null, uploadsDir);
   },
   filename: function (req, file, cb) {
-    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
-    const hospitalName = req.body.hospitalName || 'unknown';
-    cb(null, `contract_${hospitalName}_${timestamp}.pdf`);
+    let original = file.originalname;
+
+    // 깨진 파일명 복구 시도 (latin1 → utf8)
+    if (/[-ÿ]/.test(original)) {
+      try {
+        original = Buffer.from(original, 'latin1').toString('utf8');
+      } catch (e) {
+        // 복구 실패 시 원본 사용
+      }
+    }
+
+    // 한글, 영문, 숫자, _, -, . 및 공백만 허용
+    const safeName = original.replace(/[^a-zA-Z0-9가-힣_\-\. ]/g, '');
+    const finalName = safeName || `file_${Date.now()}.pdf`;
+    cb(null, finalName);
   }
 });
 
@@ -63,20 +75,28 @@ app.post('/upload-pdf', upload.single('pdf'), (req, res) => {
       });
     }
 
-    const fileInfo = {
+    // 메타데이터 저장
+    const meta = {
+      partnerName: req.body.partnerName || '',
+      partnerAddress: req.body.partnerAddress || '',
+      partnerRepresentative: req.body.partnerRepresentative || '',
+      partnerEmail: req.body.partnerEmail || '',
+      contractDate: req.body.contractDate || '',
       filename: req.file.filename,
       originalName: req.file.originalname,
       size: req.file.size,
       path: req.file.path,
       uploadDate: new Date().toISOString()
     };
+    const metaPath = path.join(uploadsDir, req.file.filename + '.json');
+    fs.writeFileSync(metaPath, JSON.stringify(meta, null, 2), 'utf-8');
 
-    console.log('PDF 파일이 성공적으로 저장되었습니다:', fileInfo);
+    console.log('PDF 파일이 성공적으로 저장되었습니다:', meta);
 
     res.json({
       success: true,
       message: 'PDF 파일이 서버에 성공적으로 저장되었습니다.',
-      file: fileInfo
+      file: meta
     });
 
   } catch (error) {
@@ -98,10 +118,24 @@ app.get('/contracts', (req, res) => {
       .map(file => {
         const filePath = path.join(uploadsDir, file);
         const stats = fs.statSync(filePath);
+        let meta = {};
+        const metaPath = filePath + '.json';
+        if (fs.existsSync(metaPath)) {
+          try {
+            meta = JSON.parse(fs.readFileSync(metaPath, 'utf-8'));
+          } catch (e) {
+            meta = {};
+          }
+        }
         return {
           filename: file,
           size: stats.size,
-          uploadDate: stats.mtime.toISOString()
+          uploadDate: stats.mtime.toISOString(),
+          partnerName: meta.partnerName || '',
+          partnerAddress: meta.partnerAddress || '',
+          partnerRepresentative: meta.partnerRepresentative || '',
+          partnerEmail: meta.partnerEmail || '',
+          contractDate: meta.contractDate || ''
         };
       });
 

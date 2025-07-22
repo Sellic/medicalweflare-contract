@@ -154,7 +154,6 @@
       <thead>
         <tr>
           <th>파일명</th>
-          <th>병원명</th>
           <th>업로드 날짜</th>
           <th>파일 크기</th>
           <th>작업</th>
@@ -193,12 +192,6 @@
       return date.toLocaleString('ko-KR');
     }
 
-    function extractHospitalName(filename) {
-      // contract_병원명_날짜.pdf 형식에서 병원명 추출
-      const match = filename.match(/contract_(.+?)_\d{4}-\d{2}-\d{2}/);
-      return match ? match[1] : filename.replace('.pdf', '');
-    }
-
     async function loadContracts() {
       try {
         const response = await fetch('/contracts');
@@ -225,11 +218,9 @@
       }
 
       tbody.innerHTML = contracts.map(contract => {
-        const hospitalName = extractHospitalName(contract.filename);
         return `
           <tr>
             <td>${contract.filename}</td>
-            <td>${hospitalName}</td>
             <td>${formatDate(contract.uploadDate)}</td>
             <td>${formatFileSize(contract.size)}</td>
             <td>
