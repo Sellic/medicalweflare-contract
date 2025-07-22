@@ -154,6 +154,9 @@
       <thead>
         <tr>
           <th>파일명</th>
+          <th>업체명</th>
+          <th>이메일</th>
+          <th>대표자명</th>
           <th>업로드 날짜</th>
           <th>파일 크기</th>
           <th>작업</th>
@@ -161,7 +164,7 @@
       </thead>
       <tbody id="contractsTableBody">
         <tr>
-          <td colspan="5" style="text-align: center;">로딩 중...</td>
+          <td colspan="7" style="text-align: center;">로딩 중...</td>
         </tr>
       </tbody>
     </table>
@@ -213,7 +216,7 @@
       const tbody = document.getElementById('contractsTableBody');
       
       if (contracts.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="5" style="text-align: center;">저장된 계약서가 없습니다.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" style="text-align: center;">저장된 계약서가 없습니다.</td></tr>';
         return;
       }
 
@@ -221,6 +224,9 @@
         return `
           <tr>
             <td>${contract.filename}</td>
+            <td>${contract.partnerName || ''}</td>
+            <td>${contract.partnerEmail || ''}</td>
+            <td>${contract.partnerRepresentative || ''}</td>
             <td>${formatDate(contract.uploadDate)}</td>
             <td>${formatFileSize(contract.size)}</td>
             <td>
