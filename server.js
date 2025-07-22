@@ -1,9 +1,11 @@
+require('dotenv').config();
 const express = require('express');
 const multer = require('multer');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 const path = require('path');
 const fs = require('fs');
+const session = require('express-session');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -13,6 +15,12 @@ app.use(cors());
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(express.static(__dirname));
+app.use(session({
+  secret: process.env.SESSION_SECRET || 'signtest_secret',
+  resave: false,
+  saveUninitialized: false,
+  cookie: { maxAge: 1000 * 60 * 60 } // 1시간
+}));
 
 // 업로드된 파일을 저장할 디렉토리 생성
 const uploadsDir = path.join(__dirname, 'uploads');
@@ -55,13 +63,48 @@ const upload = multer({
   }
 });
 
+// 인증 미들웨어
+function requireLogin(req, res, next) {
+  if (req.session && req.session.isAdmin) {
+    return next();
+  }
+  res.redirect('/login');
+}
+
 // 메인 페이지 서빙
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'contract', 'index.html'));
 });
 
-// 관리자 페이지 서빙
-app.get('/admin', (req, res) => {
+// 로그인 페이지 서빙
+app.get('/login', (req, res) => {
+  res.sendFile(path.join(__dirname, 'contract', 'login.html'));
+});
+
+// 로그인 처리
+app.post('/login', (req, res) => {
+  const { adminId, adminPw } = req.body;
+  console.log('로그인 시도:', { adminId, adminPw });
+  console.log('서버 .env:', process.env.ADMIN_ID, process.env.ADMIN_PW);
+  if (
+    adminId === process.env.ADMIN_ID &&
+    adminPw === process.env.ADMIN_PW
+  ) {
+    req.session.isAdmin = true;
+    return res.json({ success: true, message: '로그인 성공', redirect: '/admin' });
+  }
+  res.status(401).json({ success: false, message: '아이디 또는 비밀번호가 올바르지 않습니다.' });
+});
+
+// 로그아웃
+app.get('/logout', (req, res) => {
+  req.session.destroy(() => {
+    res.redirect('/login');
+  });
+});
+
+// 관리자 페이지 서빙 (인증 필요)
+app.get('/admin', requireLogin, (req, res) => {
   res.sendFile(path.join(__dirname, 'contract', 'admin.html'));
 });
 

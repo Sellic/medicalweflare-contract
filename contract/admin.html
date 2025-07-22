@@ -125,8 +125,7 @@
   <h2>메디컬웰페어 플랫폼</h2>
 
   <div class="nav-links">
-    <a href="/">계약서 작성</a>
-    <a href="/admin">계약서 관리</a>
+    <button id="logoutBtn" class="button" style="float:right; margin-left:20px;">로그아웃</button>
   </div>
 
   <div class="admin-container">
@@ -314,6 +313,16 @@
 
     // 페이지 로드 시 계약서 목록 불러오기
     document.addEventListener('DOMContentLoaded', loadContracts);
+
+    // 로그아웃 버튼 이벤트
+    document.addEventListener('DOMContentLoaded', function() {
+      const logoutBtn = document.getElementById('logoutBtn');
+      if (logoutBtn) {
+        logoutBtn.onclick = function() {
+          window.location.href = '/logout';
+        };
+      }
+    });
   </script>
 </body>
 </html> 
