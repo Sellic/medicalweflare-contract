@@ -631,6 +631,12 @@
         const tempBody = document.body.cloneNode(true);
         tempBody.classList.add('pdf-mode');
         
+        // 상단 이미지 제거
+        const guideImg = tempBody.querySelector('img[alt="guideimage"]');
+        if (guideImg) {
+          guideImg.remove();
+        }
+        
         // 버튼들 숨기기
         const buttons = tempBody.querySelectorAll('.button');
         buttons.forEach(btn => btn.style.display = 'none');

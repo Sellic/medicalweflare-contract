@@ -260,3 +260,11 @@ app.listen(PORT, () => {
   console.log(`관리자 페이지: http://localhost:${PORT}/admin`);
   console.log(`PDF 파일은 ${uploadsDir} 디렉토리에 저장됩니다.`);
 }); 
+
+app.use((err, req, res, next) => {
+  console.error('🔥 오류 캐치:', err);
+  res.status(500).json({
+    success: false,
+    message: err.message || '알 수 없는 서버 오류',
+  });
+});
