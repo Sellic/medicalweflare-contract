@@ -69,7 +69,7 @@
 
     .button {
       margin-top: 15px;
-      background: #0077cc;
+      background: #5f297d;
       color: white;
       border: none;
       padding: clamp(10px, 2vw, 12px) clamp(15px, 3vw, 20px);
@@ -102,7 +102,7 @@
     }
 
     .button:hover {
-      background: #005fa3;
+      background: #5f297d;
     }
 
     .button:disabled {
@@ -125,7 +125,7 @@
 
     .form-group input:focus {
       outline: none;
-      border-color: #0077cc;
+      border-color: #5f297d;
       box-shadow: 0 0 5px rgba(0, 119, 204, 0.3);
     }
 
@@ -221,7 +221,7 @@
     }
 
     .contract-content strong {
-      color: #0077cc;
+      color: #5f297d;
     }
 
     /* 모바일 최적화 */
@@ -322,6 +322,9 @@
       background: white !important;
       padding: 10px !important;
       font-size: 16px !important;
+      min-height: 0 !important;
+      height: auto !important;
+      padding: 0 !important;
     }
 
     .pdf-mode .contract-box {
@@ -387,7 +390,9 @@
     }
 
     .pdf-mode .form-group {
-      margin-bottom: 15px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      min-height: 0 !important;
     }
 
     .pdf-mode .form-group input {
@@ -526,6 +531,8 @@
       throttle: 16,
       velocityFilterWeight: 0.7,
     });
+
+    let lastPdfBlobUrl = null; // 마지막 PDF Blob URL 저장
 
     // 오늘 날짜를 계약일 입력란에 기본값으로 설정
     window.addEventListener('DOMContentLoaded', () => {
@@ -741,14 +748,33 @@
 
         if (result.success) {
           showStatus('계약서가 성공적으로 서버에 저장되었습니다!');
-          
-          // 로컬 다운로드도 제공
-          const url = URL.createObjectURL(pdfBlob);
+          // PDF Blob URL 저장
+          if (lastPdfBlobUrl) {
+            URL.revokeObjectURL(lastPdfBlobUrl);
+          }
+          lastPdfBlobUrl = URL.createObjectURL(pdfBlob);
+
+          // 버튼을 다운로드 버튼으로 변경
+          submitBtn.textContent = '계약서 다운로드';
+          submitBtn.disabled = false;
+          submitBtn.onclick = function() {
+            if (lastPdfBlobUrl) {
+              const a = document.createElement('a');
+              a.href = lastPdfBlobUrl;
+              a.download = `${partnerName}_업무제휴협약서.pdf`;
+              document.body.appendChild(a);
+              a.click();
+              document.body.removeChild(a);
+            }
+          };
+
+          // 최초 1회 자동 다운로드
           const a = document.createElement('a');
-          a.href = url;
+          a.href = lastPdfBlobUrl;
           a.download = `${partnerName}_업무제휴협약서.pdf`;
+          document.body.appendChild(a);
           a.click();
-          URL.revokeObjectURL(url);
+          document.body.removeChild(a);
         } else {
           showStatus('서버 저장에 실패했습니다: ' + result.message, false);
         }
@@ -757,18 +783,21 @@
         console.error('PDF 생성 및 업로드 오류:', error);
         showStatus('오류가 발생했습니다: ' + error.message, false);
       } finally {
-        submitBtn.disabled = false;
-        submitBtn.textContent = '계약서 제출 및 PDF 저장';
+        // 제출 성공 시에는 버튼 상태를 위에서 처리하므로, 실패 시에만 원래대로 복구
+        if (submitBtn.textContent !== '계약서 다운로드') {
+          submitBtn.disabled = false;
+          submitBtn.textContent = '계약서 제출 및 PDF 저장';
+        }
       }
     }
 
-    // 계약하기 버튼 클릭 시 계약서 영역 펼치기
+    // 계약하기 버튼 클릭 시 계약서 영역 펼치기 (max-height 제거, display만 토글)
     document.addEventListener('DOMContentLoaded', function() {
       var btn = document.getElementById('showContractBtn');
       var section = document.getElementById('contractSection');
       btn.addEventListener('click', function() {
         section.style.display = 'block';
-        section.style.maxHeight = section.scrollHeight + 'px';
+        section.style.maxHeight = null; // max-height 속성 제거
         btn.style.display = 'none';
       });
     });
