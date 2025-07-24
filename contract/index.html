@@ -457,7 +457,7 @@
   <img src="/contract/guide.jpg" alt="guideimage" style="width: 100%;">
 
   <div style="text-align:center; margin: 30px 0;">
-    <button class="button" id="showContractBtn" style="max-width:300px;">계약하기</button>
+    <button class="button" id="showContractBtn" style="max-width:300px;">계약서 작성 시작</button>
   </div>
 
   <div id="contractSection" style="display:none; overflow:hidden; transition:max-height 0.5s cubic-bezier(0.4,0,0.2,1); max-height:0;">
@@ -512,8 +512,8 @@
         <p>위 내용에 동의하여 서명합니다.</p>
         <canvas id="signature-pad"></canvas>
         <div class="button-container">
-          <button class="button button-secondary" onclick="clearSignature()">서명 지우기</button>
-          <button class="button" onclick="generatePDF()" id="submitBtn">계약서 제출 및 PDF 저장</button>
+          <button class="button button-secondary" onclick="clearSignature()">서명 다시하기</button>
+          <button class="button" onclick="generatePDF()" id="submitBtn">계약서 제출</button>
         </div>
         <div id="statusMessage"></div>
       </div>
@@ -755,7 +755,7 @@
           lastPdfBlobUrl = URL.createObjectURL(pdfBlob);
 
           // 버튼을 다운로드 버튼으로 변경
-          submitBtn.textContent = '계약서 다운로드';
+          submitBtn.textContent = '작성완료';
           submitBtn.disabled = false;
           submitBtn.onclick = function() {
             if (lastPdfBlobUrl) {
@@ -768,13 +768,9 @@
             }
           };
 
-          // 최초 1회 자동 다운로드
-          const a = document.createElement('a');
-          a.href = lastPdfBlobUrl;
-          a.download = `${partnerName}_업무제휴협약서.pdf`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
+          // === 자동 다운로드 제거 ===
+          // 팝업(모달) 표시
+          showCompleteModal();
         } else {
           showStatus('서버 저장에 실패했습니다: ' + result.message, false);
         }
@@ -786,7 +782,7 @@
         // 제출 성공 시에는 버튼 상태를 위에서 처리하므로, 실패 시에만 원래대로 복구
         if (submitBtn.textContent !== '계약서 다운로드') {
           submitBtn.disabled = false;
-          submitBtn.textContent = '계약서 제출 및 PDF 저장';
+          submitBtn.textContent = '계약서 제출';
         }
       }
     }
@@ -801,6 +797,54 @@
         btn.style.display = 'none';
       });
     });
+  </script>
+  <div id="completeModal" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); z-index:9999; align-items:center; justify-content:center;">
+    <div style="background:#fff; border-radius:10px; max-width:90vw; width:350px; margin:auto; padding:30px 20px 20px 20px; box-shadow:0 2px 16px rgba(0,0,0,0.15); text-align:center;">
+      <div style="font-size:1.1rem; margin-bottom:20px; line-height:1.6;">
+        계약서 작성이 완료되었습니다.<br>검토후 이메일로 최종 계약서를 전달드리겠습니다.
+      </div>
+      <button id="closeModalBtn" class="button" style="max-width:120px; margin:0 auto;">창 닫기</button>
+    </div>
+  </div>
+  <script>
+    function showCompleteModal() {
+      document.getElementById('completeModal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+      const closeBtn = document.getElementById('closeModalBtn');
+      closeBtn.onclick = function() {
+        document.getElementById('completeModal').style.display = 'none';
+        document.body.style.overflow = '';
+        resetContractForm();
+      };
+    }
+
+    function resetContractForm() {
+      // 입력값 초기화
+      document.getElementById('partnerName').value = '';
+      document.getElementById('partnerAddress').value = '';
+      document.getElementById('partnerEmail').value = '';
+      document.getElementById('partnerRepresentative').value = '';
+      // 계약서 내용의 회사명 부분 초기화
+      const contractText = document.querySelector('.contract-content p:first-child');
+      if (contractText) {
+        contractText.innerHTML = contractText.innerHTML.replace(/<strong>.*?<\/strong>/, '[하단 폼에서 입력]');
+      }
+      // 서명 초기화
+      clearSignature();
+      // 상태 메시지 초기화
+      showStatus('', true);
+      // 버튼 상태 초기화
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = false;
+      submitBtn.textContent = '계약서 제출 및 PDF 저장';
+      submitBtn.onclick = generatePDF;
+      // 서명 이미지 제거
+      const existingSignature = document.querySelector('.signature-box img');
+      if (existingSignature) existingSignature.remove();
+      // 계약서 영역 닫기, 계약하기 버튼 다시 보이기
+      document.getElementById('contractSection').style.display = 'none';
+      document.getElementById('showContractBtn').style.display = 'inline-block';
+    }
   </script>
 </body>
 </html>
