@@ -212,6 +212,8 @@
     }
 
     function displayContracts(contracts) {
+      // 최신순 정렬 (uploadDate 내림차순)
+      contracts = contracts.slice().sort((a, b) => new Date(b.uploadDate) - new Date(a.uploadDate));
       const tbody = document.getElementById('contractsTableBody');
       
       if (contracts.length === 0) {

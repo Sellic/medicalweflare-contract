@@ -482,9 +482,13 @@
         <div class="section">
           <h3>"회사"</h3>
           <div class="company-info">
-            <p>부산시 해운대구 센텀중앙로97 A-2911</p>
-            <p>주식회사 셀릭</p>
-            <p>대표이사 여건수(인)</p>
+            <p>주소: 부산시 해운대구 센텀중앙로97 A-2911</p>
+            <p>상호: 주식회사 셀릭</p>
+            <p>이메일: admin@sellic.kr</p>
+            <p>대표자: 여건수 (인)</p>
+            <p class="sellicsign" style="position: relative;">
+              <img src="/contract/sellic_sign.png" alt="sellic_sign" style="width: 200px; height: auto; position: absolute; top: -68px; left: 100px">
+            </p>
           </div>
         </div>
         <div class="section">
@@ -652,66 +656,54 @@
         const buttons = tempBody.querySelectorAll('.button');
         buttons.forEach(btn => btn.style.display = 'none');
 
-        // signature-box 전체 제거 (PDF 하단에 서명 박스 안 보이게)
+        // 기존 signature-box, 파트너사 입력 폼 제거
         const tempSignatureBox = tempBody.querySelector('.signature-box');
-        if (tempSignatureBox) {
-          tempSignatureBox.remove();
+        if (tempSignatureBox) tempSignatureBox.remove();
+        const tempPartnerSection = tempBody.querySelector('.contract-sections .section:last-child');
+        if (tempPartnerSection) tempPartnerSection.innerHTML = '';
+
+        // 파트너사 정보 텍스트로 추가
+        if (tempPartnerSection) {
+          tempPartnerSection.innerHTML = `
+            <div style="font-weight:bold; margin-bottom:8px;">\"파트너사\"</div>
+            <div>주소: ${partnerAddress}</div>
+            <div>상호: ${partnerName}</div>
+            <div>이메일: ${partnerEmail}</div>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+              대표자: ${partnerRepresentative}
+              <img src="${signatureImage}" style="height:64px; margin-left:8px; background:white; border:none;">
+            </div>
+          `;
         }
 
-        // 파트너사 대표자 입력란(form-group) 아래에 서명 필드를 추가
-        const tempPartnerSection = tempBody.querySelector('.contract-sections .section:last-child');
-        if (tempPartnerSection) {
-          const repGroup = tempPartnerSection.querySelector('.form-group:last-child');
-          if (repGroup) {
-            // 이미 서명 필드가 있으면 제거
-            const oldSignGroup = tempPartnerSection.querySelector('.form-group:last-child + .form-group');
-            if (oldSignGroup && oldSignGroup.querySelector('.field-label') && oldSignGroup.querySelector('.field-label').textContent === '서명:') {
-              oldSignGroup.remove();
-            }
-            
-            // 서명 필드 생성 (다른 필드들과 일관된 디자인)
-            const signGroup = document.createElement('div');
-            signGroup.className = 'form-group';
-            
-            const signLabel = document.createElement('label');
-            signLabel.className = 'field-label';
-            signLabel.textContent = '서명:';
-            
-            const signBox = document.createElement('div');
-            signBox.style.cssText = `
-              width: 100%;
-              padding: 12px;
-              border: 1px solid #ddd;
-              border-radius: 4px;
-              background: white;
-              min-height: 80px;
-              display: flex;
-              align-items: center;
-              justify-content: center;
-            `;
-            
-            const signImg = document.createElement('img');
-            signImg.src = signatureImage;
-            signImg.style.cssText = `
-              max-width: 100%;
-              max-height: 60px;
-              width: auto;
-              height: auto;
-              image-rendering: -webkit-optimize-contrast;
-              image-rendering: crisp-edges;
-              image-rendering: pixelated;
-            `;
-            
-            signBox.appendChild(signImg);
-            signGroup.appendChild(signLabel);
-            signGroup.appendChild(signBox);
-            repGroup.insertAdjacentElement('afterend', signGroup);
-          }
+        // 회사 정보도 동일한 박스 스타일로 재구성
+        const tempCompanySection = tempBody.querySelector('.contract-sections .section:first-child');
+        if (tempCompanySection) {
+          tempCompanySection.innerHTML = `
+            <div style="font-weight:bold; margin-bottom:8px;">\"회사\"</div>
+            <div>주소: 부산시 해운대구 센텀중앙로97 A-2911</div>
+            <div>상호: 주식회사 셀릭</div>
+            <div>이메일: admin@sellic.kr</div>
+            <div style="display:flex; align-items:center; gap:8px; margin-top:8px;">
+              대표자: 여건수 (인)
+              <img src="/contract/sellic_sign.png" style="height:64px; margin-left:8px; background:white; border:none;">
+            </div>
+          `;
+        }
+
+        // 계약서 하단 양쪽 박스 스타일 적용
+        const contractSections = tempBody.querySelector('.contract-sections');
+        if (contractSections) {
+          contractSections.style.display = 'flex';
+          contractSections.style.flexDirection = 'row';
+          contractSections.style.justifyContent = 'space-between';
+          contractSections.style.gap = '40px';
+          contractSections.style.marginTop = '40px';
         }
 
         // PDF 생성
         const pdfBlob = await html2pdf().from(tempBody).set({
-          margin: [5, 5, 5, 5],
+          margin: [5, 10, 5, 10],
           html2canvas: { 
             scale: 3,
             width: 1024,
@@ -801,7 +793,7 @@
   <div id="completeModal" style="display:none; position:fixed; left:0; top:0; width:100vw; height:100vh; background:rgba(0,0,0,0.4); z-index:9999; align-items:center; justify-content:center;">
     <div style="background:#fff; border-radius:10px; max-width:90vw; width:350px; margin:auto; padding:30px 20px 20px 20px; box-shadow:0 2px 16px rgba(0,0,0,0.15); text-align:center;">
       <div style="font-size:1.1rem; margin-bottom:20px; line-height:1.6;">
-        계약서 작성이 완료되었습니다.<br>검토후 이메일로 최종 계약서를 전달드리겠습니다.
+        계약서 작성이 완료되었습니다.<br>날인 된 계약서는 이메일로 발송됩니다.
       </div>
       <button id="closeModalBtn" class="button" style="max-width:120px; margin:0 auto;">창 닫기</button>
     </div>
